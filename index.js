@@ -12,6 +12,7 @@ app.use((req, res, next) => {
   console.log("Request:", `${req.method} ${req.url}`);
   console.log("Headers:", req.headers);
   console.log("Body:", req.body);
+  console.log("================");
   next();
 });
 
