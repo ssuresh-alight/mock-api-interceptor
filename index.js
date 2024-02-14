@@ -1,4 +1,5 @@
 const express = require("express");
+const fs = require("fs");
 
 const PORT = 5000;
 const app = express();
@@ -46,7 +47,9 @@ app.post("/create-mock", (req, res) => {
     });
   }
 
+  getData();
   mockData[`${method}_${url.toLowerCase()}`] = JSON.parse(response);
+  writeData();
 
   return res.json({
     message: `Mock for [${method}] ${url} created/updated successfully`,
@@ -63,6 +66,8 @@ app
 function anyRouteHandler(req, res) {
   const { method, url } = req;
   const key = `${method}_${url.toLowerCase()}`;
+
+  getData();
   if (mockData[key]) {
     return res.json(mockData[key]);
   }
@@ -74,3 +79,26 @@ function anyRouteHandler(req, res) {
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+function writeData() {
+  fs.writeFile("./data/data.json", JSON.stringify(mockData, null, 2), (err) => {
+    if (err) {
+      console.error(err);
+    }
+  });
+}
+
+function getData() {
+  fs.readFile("./data/data.json", (err, data) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    try {
+      const parsedData = JSON.parse(data);
+      Object.assign(mockData, parsedData);
+    } catch (err) {
+      console.error(err);
+    }
+  });
+}
