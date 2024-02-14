@@ -17,17 +17,56 @@ app.use((req, res, next) => {
 });
 
 // Routes
-app.get("/", (req, res) => {
-  res.json({ message: "Hello World!" });
+
+/**
+ * @type {Object.<string, Object>} Map of METHOD_URL to Response Objects
+ */
+const mockData = {
+  "GET_/testData": { test: "val" },
+};
+
+app.post("/create-mock", (req, res) => {
+  const { url, method, response } = req.body;
+  if (!url || !method || !response) {
+    return res
+      .status(400)
+      .json({ message: "'url', 'method' and 'response' are required" });
+  }
+
+  if (
+    method !== "GET" &&
+    method !== "POST" &&
+    method !== "PUT" &&
+    method !== "PATCH" &&
+    method !== "DELETE"
+  ) {
+    return res.status(400).json({
+      message:
+        "Invalid method. Only GET, POST, PUT, PATCH and DELETE are allowed",
+    });
+  }
+
+  mockData[`${method}_${url.toLowerCase()}`] = JSON.parse(response);
+
+  return res.json({
+    message: `Mock for [${method}] ${url} created/updated successfully`,
+  });
 });
 
-app.get("**", notFoundHandler);
+app
+  .get("**", anyRouteHandler)
+  .post("**", anyRouteHandler)
+  .put("**", anyRouteHandler)
+  .patch("**", anyRouteHandler)
+  .delete("**", anyRouteHandler);
 
-app.post("**", notFoundHandler);
+function anyRouteHandler(req, res) {
+  const { method, url } = req;
+  const key = `${method}_${url.toLowerCase()}`;
+  if (mockData[key]) {
+    return res.json(mockData[key]);
+  }
 
-app.delete("**", notFoundHandler);
-
-function notFoundHandler(req, res) {
   res.status(404).json({ message: "Mock API: Route not found" });
 }
 
