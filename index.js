@@ -21,13 +21,15 @@ app.get("/", (req, res) => {
   res.json({ message: "Hello World!" });
 });
 
-app.get("**", (req, res) => {
-  res.status(404).json({ message: "Route not found" });
-});
+app.get("**", notFoundHandler);
 
-app.post("**", (req, res) => {
+app.post("**", notFoundHandler);
+
+app.delete("**", notFoundHandler);
+
+function notFoundHandler(req, res) {
   res.status(404).json({ message: "Route not found" });
-});
+}
 
 // Start server
 app.listen(PORT, () => {
