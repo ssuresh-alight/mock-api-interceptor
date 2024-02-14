@@ -28,7 +28,7 @@ app.post("**", notFoundHandler);
 app.delete("**", notFoundHandler);
 
 function notFoundHandler(req, res) {
-  res.status(404).json({ message: "Route not found" });
+  res.status(404).json({ message: "Mock API: Route not found" });
 }
 
 // Start server
