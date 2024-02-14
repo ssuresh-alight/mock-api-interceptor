@@ -22,9 +22,7 @@ app.use((req, res, next) => {
 /**
  * @type {Object.<string, Object>} Map of METHOD_URL to Response Objects
  */
-const mockData = {
-  "GET_/testData": { test: "val" },
-};
+const mockData = {};
 
 app.post("/create-mock", (req, res) => {
   const { url, method, response } = req.body;
