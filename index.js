@@ -5,7 +5,7 @@ const PORT = 5000;
 const app = express();
 
 // Middlewarez
-app.use(express.json());
+app.use(express.json({ limit: "16mb" }));
 app.use(express.urlencoded({ extended: true }));
 
 // Middleware to log url, header, body:
