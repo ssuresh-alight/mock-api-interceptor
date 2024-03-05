@@ -67,7 +67,8 @@ function anyRouteHandler(req, res) {
 
   getData();
   if (mockData[key]) {
-    return res.json(mockData[key]);
+    res.json(mockData[key]);
+    return;
   }
 
   res.status(404).json({ message: "Mock API: Route not found" });
