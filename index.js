@@ -54,6 +54,12 @@ app.post("/create-mock", (req, res) => {
   });
 });
 
+// Add any custom mocks you want here
+// Example:
+app.get("/error", (req, res) => {
+  res.status(500).json({ message: "Internal Server Error" });
+});
+
 app
   .get("**", anyRouteHandler)
   .post("**", anyRouteHandler)
