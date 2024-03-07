@@ -2,6 +2,7 @@ const express = require("express");
 const fs = require("fs");
 
 const PORT = 5000;
+const DATA_FILE_PATH = "./data/data.json";
 const app = express();
 
 // Middlewarez
@@ -46,7 +47,7 @@ app.post("/create-mock", async (req, res) => {
   }
 
   await getData();
-  mockData[`${method}_${url.toLowerCase()}`] = JSON.parse(response);
+  mockData[`${method}_${url}`] = JSON.parse(response);
   await writeData();
 
   return res.json({
@@ -69,7 +70,7 @@ app
 
 async function anyRouteHandler(req, res) {
   const { method, url } = req;
-  const key = `${method}_${url.toLowerCase()}`;
+  const key = `${method}_${url}`;
 
   await getData();
   if (mockData[key]) {
@@ -88,7 +89,7 @@ app.listen(PORT, () => {
 async function writeData() {
   try {
     await fs.promises.writeFile(
-      "./data/data.json",
+      DATA_FILE_PATH,
       JSON.stringify(mockData, null, 2)
     );
   } catch (err) {
@@ -98,7 +99,7 @@ async function writeData() {
 
 async function getData() {
   try {
-    const data = await fs.promises.readFile("./data/data.json");
+    const data = await fs.promises.readFile(DATA_FILE_PATH);
     const parsedData = JSON.parse(data);
     Object.assign(mockData, parsedData);
   } catch (err) {
