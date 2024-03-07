@@ -24,7 +24,7 @@ app.use((req, res, next) => {
  */
 const mockData = {};
 
-app.post("/create-mock", (req, res) => {
+app.post("/create-mock", async (req, res) => {
   const { url, method, response } = req.body;
   if (!url || !method || !response) {
     return res
@@ -45,9 +45,9 @@ app.post("/create-mock", (req, res) => {
     });
   }
 
-  getData();
+  await getData();
   mockData[`${method}_${url.toLowerCase()}`] = JSON.parse(response);
-  writeData();
+  await writeData();
 
   return res.json({
     message: `Mock for [${method}] ${url} created/updated successfully`,
@@ -67,11 +67,11 @@ app
   .patch("**", anyRouteHandler)
   .delete("**", anyRouteHandler);
 
-function anyRouteHandler(req, res) {
+async function anyRouteHandler(req, res) {
   const { method, url } = req;
   const key = `${method}_${url.toLowerCase()}`;
 
-  getData();
+  await getData();
   if (mockData[key]) {
     res.json(mockData[key]);
     return;
@@ -85,25 +85,23 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
-function writeData() {
-  fs.writeFile("./data/data.json", JSON.stringify(mockData, null, 2), (err) => {
-    if (err) {
-      console.error(err);
-    }
-  });
+async function writeData() {
+  try {
+    await fs.promises.writeFile(
+      "./data/data.json",
+      JSON.stringify(mockData, null, 2)
+    );
+  } catch (err) {
+    console.error(err);
+  }
 }
 
-function getData() {
-  fs.readFile("./data/data.json", (err, data) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
-    try {
-      const parsedData = JSON.parse(data);
-      Object.assign(mockData, parsedData);
-    } catch (err) {
-      console.error(err);
-    }
-  });
+async function getData() {
+  try {
+    const data = await fs.promises.readFile("./data/data.json");
+    const parsedData = JSON.parse(data);
+    Object.assign(mockData, parsedData);
+  } catch (err) {
+    console.error(err);
+  }
 }
