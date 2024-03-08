@@ -1,5 +1,6 @@
 const express = require("express");
 const fs = require("fs");
+const notifier = require("node-notifier");
 
 const PORT = 5000;
 const DATA_FILE_PATH = "./data/data.json";
@@ -78,6 +79,12 @@ async function anyRouteHandler(req, res) {
     return;
   }
 
+  // Show notification for unregistered routes:
+  notifier.notify({
+    title: "Mock-API: Unregistered route",
+    message: `Method: ${method}, URL: ${url.slice(0, 30)}...`,
+    sound: true,
+  });
   res.status(404).json({ message: "Mock API: Route not found" });
 }
 
