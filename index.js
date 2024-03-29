@@ -11,6 +11,10 @@ const app = express();
 app.use(express.json({ limit: "16mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(compression());
+// Add delay to all requests:
+// app.use(function (_, _, next) {
+//   setTimeout(next, 2000);
+// });
 
 // Middleware to log url, header, body:
 app.use((req, res, next) => {
