@@ -1,6 +1,7 @@
 const express = require("express");
 const fs = require("fs");
 const notifier = require("node-notifier");
+const compression = require("compression");
 
 const PORT = 5000;
 const DATA_FILE_PATH = "./data/data.json";
@@ -9,6 +10,7 @@ const app = express();
 // Middlewarez
 app.use(express.json({ limit: "16mb" }));
 app.use(express.urlencoded({ extended: true }));
+app.use(compression());
 
 // Middleware to log url, header, body:
 app.use((req, res, next) => {
@@ -69,6 +71,11 @@ app
   .patch("**", anyRouteHandler)
   .delete("**", anyRouteHandler);
 
+/**
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {express.NextFunction} next
+ */
 async function anyRouteHandler(req, res) {
   const { method, url } = req;
   const key = `${method}_${url}`;
