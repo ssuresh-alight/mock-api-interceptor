@@ -8,7 +8,7 @@ const DATA_FILE_PATH = "./data/data.json";
 const app = express();
 
 // Middlewarez
-app.use(express.json({ limit: "16mb" }));
+app.use(express.json({ limit: "32mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(compression());
 // Add delay to all requests:
