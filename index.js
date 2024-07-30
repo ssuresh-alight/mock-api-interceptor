@@ -10,7 +10,7 @@ const app = express();
 // Middlewarez
 app.use(express.json({ limit: "32mb" }));
 app.use(express.urlencoded({ extended: true }));
-app.use(compression());
+app.use(compression({ threshold: 0 })); // 0 == always use compression
 // Add delay to all requests:
 // app.use(function (_, _, next) {
 //   setTimeout(next, 2000);
